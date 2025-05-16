@@ -1,0 +1,2 @@
+<input type="file" (change)="onFileSelected($event)" accept=".obj" />
+<button (click)="convert()" [disabled]="!selectedFile">Convert to GLB</button>

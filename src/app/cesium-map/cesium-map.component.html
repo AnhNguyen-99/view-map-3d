@@ -1,0 +1,8 @@
+<!-- cesium-map.component.html -->
+<div class="toolbar">
+  <button (click)="startMeasure('distance')">Measure Distance</button>
+  <button (click)="startMeasure('area')">Measure Area</button>
+  <button (click)="startMeasure('point')">Pick Point</button>
+  <button (click)="clearMeasurement()">Clear</button>
+</div>
+<div #cesiumContainer class="cesium-container"></div>

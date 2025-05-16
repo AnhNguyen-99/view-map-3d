@@ -1,0 +1,22 @@
+.cesium-viewer-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;       /* 👉 Căn giữa các nút theo chiều ngang */
+    top: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+    position: absolute !important;
+    z-index: 1000;
+  }
+  
+  .cesium-viewer-toolbar > button {
+    margin: 5px 0 !important;             /* Khoảng cách giữa các nút */
+    width: 40px !important;               /* 👉 Cố định kích thước để đều nhau */
+    height: 40px !important;
+    display: flex !important;
+    justify-content: center !important;  /* 👉 Căn giữa icon ngang */
+    align-items: center !important;      /* 👉 Căn giữa icon dọc */
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  
