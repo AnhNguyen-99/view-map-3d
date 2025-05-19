@@ -4,8 +4,9 @@ import {
   Viewer,
   Ion,
   OpenStreetMapImageryProvider,
-  Cesium3DTileset
+  Cesium3DTileset, Cartesian3
 } from 'cesium';
+import * as Cesium from "cesium";
 
 interface TilesetInfo {
   id: string;
@@ -28,7 +29,7 @@ export class MapView3dComponent implements OnInit {
 
     // Khởi tạo viewer
     this.viewer = new Viewer(this.cesiumContainer.nativeElement, {
-      baseLayerPicker: false,
+      baseLayerPicker: true,
       terrainProvider: undefined
     });
 
@@ -53,12 +54,35 @@ export class MapView3dComponent implements OnInit {
       try {
         const tileset = await Cesium3DTileset.fromUrl(tilesetPath);
 
+        // Log chi tiết mỗi tile khi visible
         tileset.tileVisible.addEventListener((tile) => {
-          // console.log(`[${tile.content.url}] visible`);
+          // const url =
+          //   tile.content && (tile.content as any).url
+          //     ? (tile.content as any).url
+          //     : '[no content url]';
+          // console.log(
+          //   '[CESIUM TILE VISIBLE]',
+          //   '\nurl:', url,
+          //   '\ngeometricError:', tile.geometricError,
+          //   '\nboundingVolume:', tile.boundingVolume.boundingVolume,
+          //   '\nlevel:', tile.level,
+          //   '\nisLeaf:', tile.isLeaf,
+          //   '\nchildren:', tile.children.length
+          // );
         });
+
+        // Ép Cesium render toàn bộ tile cha & con (chạy cực sâu)
+        tileset.maximumScreenSpaceError = 1; // ép tải tối đa, chú ý RAM!
 
         this.viewer.scene.primitives.add(tileset);
 
+        const heightOffset = 35;
+        const boundingSphere = tileset.boundingSphere;
+        const carto = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+        const surface = Cartesian3.fromRadians(carto.longitude, carto.latitude, 0);
+        const offset = Cartesian3.fromRadians(carto.longitude, carto.latitude, heightOffset);
+        const translation = Cartesian3.subtract(offset, surface, new Cartesian3());
+        tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
         if (isFirst) {
           this.viewer.zoomTo(tileset);
           isFirst = false;
