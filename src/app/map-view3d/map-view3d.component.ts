@@ -1,13 +1,7 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {
   Viewer,
   Ion,
-  createWorldTerrainAsync,
-  Cartesian3,
-  Math as CesiumMath,
-  ImageryLayer,
   OpenStreetMapImageryProvider,
   Cesium3DTileset
 } from 'cesium';
@@ -18,22 +12,34 @@ import {
   styleUrls: ['./map-view3d.component.scss']
 })
 export class MapView3dComponent implements OnInit {
+  @ViewChild('cesiumContainer', { static: true }) cesiumContainer!: ElementRef;
 
   viewer!: Viewer;
 
   async ngOnInit(): Promise<void> {
-    // Tắt token Cesium Ion
+    // Vô hiệu hóa token Cesium Ion
     Ion.defaultAccessToken = null as any;
 
-    // Khởi tạo viewer
-    this.viewer = new Viewer('cesiumContainer', {
-      terrainProvider: undefined,
+    // Khởi tạo Viewer
+    this.viewer = new Viewer(this.cesiumContainer.nativeElement, {
       baseLayerPicker: false,
+      terrainProvider: undefined
     });
 
-    // Load tileset bằng API mới
-    const tileset = await Cesium3DTileset.fromUrl('/assets/3dtiles/tileset.json');
+    // Thêm lớp OSM sau khi Viewer được khởi tạo
+    const osmLayer = new OpenStreetMapImageryProvider({
+      url: 'https://a.tile.openstreetmap.org/'
+    });
+    this.viewer.imageryLayers.addImageryProvider(osmLayer);
+
+    // Load và thêm 3D Tileset
+    const tileset = await Cesium3DTileset.fromUrl('/assets/3dtiles/Tile_1.json');
+    tileset.tileVisible.addEventListener((tile) => {
+      console.log('Tile visible:', tile.content.url);
+    });
+
     this.viewer.scene.primitives.add(tileset);
     this.viewer.zoomTo(tileset);
+
   }
 }
