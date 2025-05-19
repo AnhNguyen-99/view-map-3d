@@ -9,6 +9,7 @@ import { ViewMapComponent } from './view-map/view-map.component';
 import { MapComponent } from './map/map.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CesiumViewerComponent } from './cesium-viewer/cesium-viewer.component';
+import { MapView3dComponent } from './map-view3d/map-view3d.component';
 
 @NgModule({
   declarations: [
@@ -17,12 +18,13 @@ import { CesiumViewerComponent } from './cesium-viewer/cesium-viewer.component';
     ObjToGlbConverterComponent,
     ViewMapComponent,
     MapComponent,
-    CesiumViewerComponent
+    CesiumViewerComponent,
+    MapView3dComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule 
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

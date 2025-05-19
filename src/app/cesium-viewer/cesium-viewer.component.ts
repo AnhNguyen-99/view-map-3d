@@ -43,8 +43,9 @@ export class CesiumViewerComponent implements OnInit, AfterViewInit {
   private readonly HANOI_HEIGHT = 5000;
 
   // TODO: đổi thành URL thực của bạn
-  private readonly basePath = 
-    "http://103.214.9.127:9091/tiles_3d/dddcc44f-57d7-4282-8ff5-7ece5579beda1731313018031";
+  // private readonly basePath =
+  //   "http://103.214.9.127:9091/tiles_3d/dddcc44f-57d7-4282-8ff5-7ece5579beda1731313018031";
+  readonly basePath = '/assets/Data';
 
   constructor(private http: HttpClient) {}
 
