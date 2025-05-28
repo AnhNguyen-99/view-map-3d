@@ -1,95 +1,50 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import {
   Viewer,
   Ion,
+  IonResource,
+  Cesium3DTileset,
   OpenStreetMapImageryProvider,
-  Cesium3DTileset, Cartesian3
+  ImageryLayer,
+  Cartesian3,
+  HeadingPitchRoll,
+  Transforms
 } from 'cesium';
-import * as Cesium from "cesium";
-
-interface TilesetInfo {
-  id: string;
-  path: string;
-}
+import { DownloadService } from "./download.service";
 
 @Component({
   selector: 'app-map-view3d',
   templateUrl: './map-view3d.component.html',
   styleUrls: ['./map-view3d.component.scss']
 })
-export class MapView3dComponent implements OnInit {
-  @ViewChild('cesiumContainer', { static: true }) cesiumContainer!: ElementRef;
-  viewer!: Viewer;
+export class MapView3dComponent implements AfterViewInit {
+  @ViewChild('cesiumContainer', { static: false }) cesiumContainer!: ElementRef;
 
-  constructor(private http: HttpClient) {}
+  private viewer!: Viewer;
+  private tileset!: Cesium3DTileset;
 
-  async ngOnInit(): Promise<void> {
-    Ion.defaultAccessToken = null as any;
+  async ngAfterViewInit(): Promise<void> {
+    Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1NGExYzRlMC1hMmJkLTQ4NzctOTZkZC00ZjZlNzBiYjU3OTMiLCJpZCI6MzAzMDM1LCJpYXQiOjE3NDczOTA5ODl9.YDhrNtkz0PjCSiA4gQrERd_-Zc228HxVfR8Vu2P9vOo';
 
-    // Khởi tạo viewer
+    const osmLayer = new ImageryLayer(
+      new OpenStreetMapImageryProvider({ url: "https://a.tile.openstreetmap.org/" })
+    );
     this.viewer = new Viewer(this.cesiumContainer.nativeElement, {
-      baseLayerPicker: true,
-      terrainProvider: undefined
+      baseLayer: osmLayer,
+      baseLayerPicker: false
     });
 
-    const osmLayer = new OpenStreetMapImageryProvider({
-      url: 'https://a.tile.openstreetmap.org/'
-    });
-    this.viewer.imageryLayers.addImageryProvider(osmLayer);
+    const resource = await IonResource.fromAssetId(3397561);
+    this.tileset = await Cesium3DTileset.fromUrl(resource);
 
-    // Load danh sách tilesets
-    const tilesJsonPath = '/assets/Data/titles.json';
-    const tilesData = await this.http.get<{ tilesets: TilesetInfo[] }>(tilesJsonPath).toPromise();
+    this.viewer.scene.primitives.add(this.tileset);
+    this.viewer.zoomTo(this.tileset);
+  }
 
-    if (!tilesData || !tilesData.tilesets) {
-      console.error('Không tìm thấy danh sách tilesets!');
-      return;
-    }
-
-    let isFirst = true;
-
-    for (const tile of tilesData.tilesets) {
-      const tilesetPath = `/assets/Data/${tile.path}`;
-      try {
-        const tileset = await Cesium3DTileset.fromUrl(tilesetPath);
-
-        // Log chi tiết mỗi tile khi visible
-        tileset.tileVisible.addEventListener((tile) => {
-          // const url =
-          //   tile.content && (tile.content as any).url
-          //     ? (tile.content as any).url
-          //     : '[no content url]';
-          // console.log(
-          //   '[CESIUM TILE VISIBLE]',
-          //   '\nurl:', url,
-          //   '\ngeometricError:', tile.geometricError,
-          //   '\nboundingVolume:', tile.boundingVolume.boundingVolume,
-          //   '\nlevel:', tile.level,
-          //   '\nisLeaf:', tile.isLeaf,
-          //   '\nchildren:', tile.children.length
-          // );
-        });
-
-        // Ép Cesium render toàn bộ tile cha & con (chạy cực sâu)
-        tileset.maximumScreenSpaceError = 1; // ép tải tối đa, chú ý RAM!
-
-        this.viewer.scene.primitives.add(tileset);
-
-        const heightOffset = 35;
-        const boundingSphere = tileset.boundingSphere;
-        const carto = Cesium.Cartographic.fromCartesian(boundingSphere.center);
-        const surface = Cartesian3.fromRadians(carto.longitude, carto.latitude, 0);
-        const offset = Cartesian3.fromRadians(carto.longitude, carto.latitude, heightOffset);
-        const translation = Cartesian3.subtract(offset, surface, new Cartesian3());
-        tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
-        if (isFirst) {
-          this.viewer.zoomTo(tileset);
-          isFirst = false;
-        }
-      } catch (err) {
-        console.error(`Lỗi khi load ${tilesetPath}`, err);
-      }
+  // Hàm này sẽ được gọi khi nhấn nút
+  focusTileset() {
+    if (this.viewer && this.tileset) {
+      this.viewer.flyTo(this.tileset);
     }
   }
 }
