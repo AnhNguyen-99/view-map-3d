@@ -1,1 +1,5 @@
-<div #cesiumContainer style="width: 100%; height: 100vh;"></div>
+<div #cesiumContainer class="cesium-container"></div>
+<div class="compass" #compassContainer>
+  <img ngSrc="assets/compass.png" alt="Compass" class="compass-img" height="512" width="512"/>
+</div>
+<button (click)="focusTileset()">Focus Tileset</button>

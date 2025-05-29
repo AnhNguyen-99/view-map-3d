@@ -10,6 +10,7 @@ import { MapComponent } from './map/map.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CesiumViewerComponent } from './cesium-viewer/cesium-viewer.component';
 import { MapView3dComponent } from './map-view3d/map-view3d.component';
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MapView3dComponent } from './map-view3d/map-view3d.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgOptimizedImage
   ],
   providers: [],
   bootstrap: [AppComponent]
