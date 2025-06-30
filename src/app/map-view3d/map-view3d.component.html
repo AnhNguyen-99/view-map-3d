@@ -1,6 +1,57 @@
-<div #cesiumContainer style="width: 100%; height: 100vh;"></div>
+<div #cesiumContainer style="width: 100%; height: 100vh"></div>
 <div class="cs-compass" #compassContainer>
   <div class="out-ring" title="Drag to rotate view">
-    <img alt="Compass outer" draggable="false" width="80" height="80" ngSrc="assets/compass_inner.svg" class="compass-outer-img" />
+    <img
+      alt="Compass outer"
+      draggable="false"
+      width="80"
+      height="80"
+      ngSrc="assets/compass_inner.svg"
+      class="compass-outer-img"
+    />
+  </div>
+</div>
+<div class="measurement-panel">
+  <h3>Công cụ đo đạc</h3>
+
+  <div class="tool-buttons">
+    <button
+      class="tool-btn"
+      [class.active]="measurementTools.point"
+      (click)="togglePointMeasurement()"
+      title="Đo chấm điểm"
+    >
+      <i class="icon-point"></i>
+      Đo điểm
+    </button>
+
+    <button
+      class="tool-btn"
+      [class.active]="measurementTools.distance"
+      (click)="toggleDistanceMeasurement()"
+      title="Đo khoảng cách bề mặt"
+    >
+      <i class="icon-distance"></i>
+      Đo khoảng cách
+    </button>
+
+    <button
+      class="tool-btn"
+      [class.active]="measurementTools.area"
+      (click)="toggleAreaMeasurement()"
+      title="Đo diện tích bề mặt"
+    >
+      <i class="icon-area"></i>
+      Đo diện tích
+    </button>
+
+    <button
+      class="tool-btn clear-btn"
+      (click)="clearAllMeasurements()"
+      title="Xóa tất cả đo đạc"
+    >
+      <i class="icon-clear"></i>
+      Xóa tất cả
+    </button>
   </div>
 </div>

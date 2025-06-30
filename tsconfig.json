@@ -23,7 +23,11 @@
       "ES2022",
       "dom"
     ],
-    "types": ["cesium"]
+    "types": ["cesium"],
+    // ADD THESE LINES TO FIX THE CESIUM IMPORT ISSUE
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

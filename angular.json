@@ -38,7 +38,10 @@
               "src/styles.scss",
               "./node_modules/cesium/Build/Cesium/Widgets/widgets.css"
             ],
-            "scripts": ["./node_modules/cesium/Build/Cesium/Cesium.js"]
+            "scripts": [
+              "./node_modules/cesium/Build/Cesium/Cesium.js",
+               "node_modules/@cesium-extends/drawer/dist/index.js"
+              ]
           },
           "configurations": {
             "production": {
